@@ -1,0 +1,48 @@
+# vi: ft=dockerfile
+# Note: this dockerfile is not reproducible, because the repository
+# where we fetch packages from is not pinned to a specific point in
+# time; i.e. we'll get whatever is current at the moment we build.
+
+FROM fedora:28
+
+# Fedora's Dokerfile does not provide a edefault command
+CMD ["bash"]
+
+LABEL maintainer="Buildroot mailing list <buildroot@buildroot.org>" \
+      vendor="Buildroot" \
+      description="Container based on Fedora 28, with everything needed to run Buildroot already installed"
+
+# Remove the repository with updates, so we only
+# get packages as they were at time of release.
+RUN rm -f /etc/yum.repos.d/fedora-updates*.repo && \
+    dnf -y install \
+        @development-tools \
+        bc \
+        bzip2 \
+        bzr \
+        cpio \
+        cvs \
+        file \
+        gcc-c++ \
+        git \
+        mercurial \
+        ncurses-devel \
+        perl-ExtUtils-MakeMaker \
+        perl-Thread-Queue \
+        python-nose2 \
+        python-pexpect \
+        qemu-system-arm \
+        qemu-system-x86 \
+        rsync \
+        subversion \
+        unzip \
+        wget \
+    && dnf -y clean all
+
+RUN useradd -ms /bin/bash br-user && \
+    chown -R br-user:br-user /home/br-user
+
+USER br-user
+WORKDIR /home/br-user
+ENV HOME /home/br-user
+ENV LC_ALL en_US.UTF-8
