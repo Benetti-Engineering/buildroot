@@ -15,6 +15,11 @@ MINICOM_CPE_ID_VENDOR = minicom_project
 MINICOM_DEPENDENCIES = ncurses $(if $(BR2_ENABLE_LOCALE),,libiconv) \
 	$(TARGET_NLS_DEPENDENCIES) host-pkgconf
 
+#ifeq ($(BR2_PACKAGE_LOCKDEV),y)
+#MINICOM_DEPENDENCIES += lockdev
+#MINICOM_CONF_OPTS += --with-lockdev
+#endif
+
 MINICOM_CONF_OPTS = \
 	--enable-dfl-port=/dev/ttyS1 \
 	--enable-lock-dir=/var/lock
