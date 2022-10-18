@@ -23,6 +23,22 @@ config BR2_PACKAGE_MONO
 
 	  http://download.mono-project.com/sources/mono/
 
+config BR2_PACKAGE_MONO_SPECIFY_FOLDERS_TO_INSTALL
+	bool "Specify folders to install to target"
+	help
+	  Allow to specify which Mono folder to install to target
+
+if BR2_PACKAGE_MONO_SPECIFY_FOLDERS_TO_INSTALL
+
+config BR2_PACKAGE_MONO_FOLDERS_TO_INSTALL
+	string "Mono folders to install to target"
+	help
+	  Paths to Mono folders to install to target /usr/lib/mono/.
+	  Only these folders will be copied to the target and not all
+	  the built ones. You can provide a list of folders separated by
+	  by spaces.
+
+endif
 comment "mono needs a toolchain w/ C++, NPTL, dynamic library"
 	depends on BR2_PACKAGE_MONO_ARCH_SUPPORTS
 	depends on !BR2_INSTALL_LIBSTDCPP || \
