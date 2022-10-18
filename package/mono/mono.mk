@@ -31,10 +31,22 @@ MONO_CONF_OPTS = $(MONO_COMMON_CONF_OPTS) --disable-mcs-build
 
 # The libraries have been built by the host-mono build. Since they are
 # architecture-independent, we simply copy them to the target.
+ifeq ($(BR2_PACKAGE_MONO_SPECIFY_FOLDERS_TO_INSTALL),y)
+# Copy only selected folders
+define MONO_INSTALL_LIBS
+	mkdir -p $(TARGET_DIR)/usr/lib/mono
+	(for dir in $(call qstrip,$(BR2_PACKAGE_MONO_FOLDERS_TO_INSTALL)); do \
+		rsync -av --exclude=*.so --exclude=*.mdb \
+		$(HOST_DIR)/lib/mono/$${dir} $(TARGET_DIR)/usr/lib/mono; \
+	done)
+endef
+else
+# Copy all folders
 define MONO_INSTALL_LIBS
 	rsync -av --exclude=*.so --exclude=*.mdb \
 		$(HOST_DIR)/lib/mono $(TARGET_DIR)/usr/lib/
 endef
+endif
 
 MONO_POST_INSTALL_TARGET_HOOKS += MONO_INSTALL_LIBS
 
