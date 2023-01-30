@@ -1238,6 +1238,7 @@ F:	package/libnspr/
 F:	package/libnss/
 F:	package/libnvme/
 F:	package/libtraceevent/
+F:	package/libtracefs
 F:	package/mali-driver/
 F:	package/minicom/
 F:	package/mongoose/
@@ -2131,6 +2132,7 @@ F:	package/timescaledb/
 
 N:	Maxime Chevallier <maxime.chevallier@bootlin.com>
 F:	package/libtraceevent/
+F:	package/libtracefs
 
 N:	Michael Durrant <mdurrant@arcturusnetworks.com>
 F:	board/arcturus/
