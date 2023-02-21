@@ -16,7 +16,8 @@ if BR2_PACKAGE_JPEG
 
 choice
 	prompt "jpeg variant"
-	default BR2_PACKAGE_JPEG_TURBO if BR2_PACKAGE_JPEG_SIMD_SUPPORT
+	default BR2_PACKAGE_JPEG_TURBO if BR2_PACKAGE_JPEG_SIMD_SUPPORT || \
+					  BR2_PACKAGE_QT5BASE_JPEG
 	help
 	  Select the normal libjpeg or libjpeg-turbo.
 
