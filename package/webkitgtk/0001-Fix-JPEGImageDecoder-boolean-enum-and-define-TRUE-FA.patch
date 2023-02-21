@@ -1,0 +1,53 @@
+From 37f07b014126f8ca56b60b3a4ed38f96f07d2ec9 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Date: Tue, 21 Feb 2023 16:43:05 +0100
+Subject: [PATCH] Fix JPEGImageDecoder boolean enum and #define TRUE/FALSE mix
+ https://bugs.webkit.org/show_bug.cgi?id=252666
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Reviewed by NOBODY (OOPS!).
+
+jpeglib.h contains a typedef enum for boolean type but LCMSUniquePtr.h
+include files that can contain #define TRUE/FALSE. This way build fails
+with:
+JPEGImageDecoder.cpp:343:43: error: invalid conversion from ‘int’ to ‘boolean’
+
+This is because TRUE or FALSE should be an enum instead they get defined
+as 1 or 0. To fix this move jpeglib.h inclusion after LCMSUniquePtr.h
+inclusion.
+
+Source/WebCore/platform/image-decoders/jpeg/JPEGImageDecoder.h:
+
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+ .../platform/image-decoders/jpeg/JPEGImageDecoder.h        | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/Source/WebCore/platform/image-decoders/jpeg/JPEGImageDecoder.h b/Source/WebCore/platform/image-decoders/jpeg/JPEGImageDecoder.h
+index aa875de00faa..c396e1086d41 100644
+--- a/Source/WebCore/platform/image-decoders/jpeg/JPEGImageDecoder.h
++++ b/Source/WebCore/platform/image-decoders/jpeg/JPEGImageDecoder.h
+@@ -32,14 +32,15 @@
+ // ICU defines TRUE and FALSE macros, breaking libjpeg v9 headers
+ #undef TRUE
+ #undef FALSE
+-extern "C" {
+-#include "jpeglib.h"
+-}
+ 
+ #if USE(LCMS)
+ #include "LCMSUniquePtr.h"
+ #endif
+ 
++extern "C" {
++#include "jpeglib.h"
++}
++
+ namespace WebCore {
+ 
+     class JPEGImageReader;
+-- 
+2.34.1
+
