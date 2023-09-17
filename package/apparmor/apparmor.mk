@@ -51,7 +51,7 @@ APPARMOR_DEPENDENCIES += linux-pam
 APPARMOR_TOOLS += changehat/pam_apparmor
 endif
 
-ifeq ($(BR2_PACKAGE_APACHE),y)
+ifeq ($(BR2_PACKAGE_APACHE_DAEMON),y)
 APPARMOR_DEPENDENCIES += apache
 APPARMOR_TOOLS += changehat/mod_apparmor
 APPARMOR_MAKE_OPTS += APXS=$(STAGING_DIR)/usr/bin/apxs
