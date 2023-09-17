@@ -39,7 +39,7 @@ if BR2_PACKAGE_PHP
 
 config BR2_PACKAGE_PHP_SAPI_APACHE
 	bool "Apache interface"
-	depends on BR2_PACKAGE_APACHE
+	depends on BR2_PACKAGE_APACHE_DAEMON
 	help
 	  Apache module
 
