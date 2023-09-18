@@ -1297,6 +1297,7 @@ F:	configs/rockpro64_defconfig
 F:	package/at/
 F:	package/binutils/
 F:	package/cryptsetup/
+F:	package/dotnet6-runtime/
 F:	package/erlang-jiffy/
 F:	package/esp-hosted/
 F:	package/gcc/
