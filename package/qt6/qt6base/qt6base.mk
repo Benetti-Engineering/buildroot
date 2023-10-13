@@ -82,7 +82,6 @@ HOST_QT6BASE_DEPENDENCIES = \
 	host-pcre2 \
 	host-zlib
 HOST_QT6BASE_CONF_OPTS = \
-	-DFEATURE_gui=OFF \
 	-DFEATURE_concurrent=OFF \
 	-DFEATURE_xml=ON \
 	-DFEATURE_sql=OFF \
@@ -95,6 +94,20 @@ HOST_QT6BASE_CONF_OPTS = \
 	-DFEATURE_system_libb2=ON \
 	-DFEATURE_system_pcre2=ON \
 	-DFEATURE_system_zlib=ON
+
+# This is needed to build the qsb binary.from host-qt6shadertools
+ifeq ($(BR2_PACKAGE_HOST_QT6BASE_GUI),y)
+HOST_QT6BASE_CONF_OPTS += \
+	-DFEATURE_gui=ON \
+	-DFEATURE_vulkan=OFF \
+	-DINPUT_opengl=no \
+	-DFEATURE_linuxfb=ON \
+	-DFEATURE_eglfs=OFF \
+	-DFEATURE_opengl=OFF \
+	-DINPUT_opengl=no
+else
+HOST_QT6BASE_CONF_OPTS += -DFEATURE_gui=OFF
+endif
 
 # Conditional blocks below are ordered by alphabetic ordering of the
 # BR2_PACKAGE_* option.
