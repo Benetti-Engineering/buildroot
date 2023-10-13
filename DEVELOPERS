@@ -40,6 +40,7 @@ F:	package/flutter-sdk-bin/
 F:	package/python-kmod/
 F:	package/python-versioneer/
 F:	support/testing/tests/package/test_firewalld.py
+F:	package/qt6/qt6shadertools/
 F:	support/testing/tests/package/test_flutter.py
 
 N:	Adam Heinrich <adam@adamh.cz>
