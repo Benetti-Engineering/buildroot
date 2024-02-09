@@ -674,6 +674,7 @@ menu "Interpreter languages and scripting"
 	source "package/4th/Config.in"
 	source "package/chicken/Config.in"
 	source "package/dotnet6-runtime/Config.in"
+	source "package/dotnet8-runtime/Config.in"
 	source "package/enscript/Config.in"
 	source "package/erlang/Config.in"
 if BR2_PACKAGE_ERLANG
