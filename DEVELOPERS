@@ -1310,6 +1310,7 @@ F:	package/bind/
 F:	package/binutils/
 F:	package/cryptsetup/
 F:	package/dash/
+F:	package/dotnet-runtime-prebuilt/
 F:	package/dotnet6-runtime/
 F:	package/erlang-jiffy/
 F:	package/esp-hosted/
