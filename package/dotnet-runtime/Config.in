@@ -1,0 +1,84 @@
+config BR2_PACKAGE_DOTNET_RUNTIME_ARCH_SUPPORTS
+	bool
+	default y if BR2_aarch64
+	# The official ARM binaries are built for ARMv7-A with the
+	# hard-float ABI. The CoreCLR JIT also needs at least a VFPv3-D16
+	# FPU.
+	default y if BR2_arm && BR2_ARM_EABIHF && \
+		(BR2_ARM_CPU_ARMV7A || BR2_ARM_CPU_ARMV8A) && \
+		(BR2_ARM_FPU_VFPV3 || BR2_ARM_FPU_VFPV3D16 || \
+		BR2_ARM_FPU_VFPV4 || BR2_ARM_FPU_VFPV4D16 || \
+		BR2_ARM_FPU_NEON || BR2_ARM_FPU_NEON_VFPV4 || \
+		BR2_ARM_FPU_FP_ARMV8 || BR2_ARM_FPU_NEON_FP_ARMV8)
+	default y if BR2_x86_64
+	depends on BR2_USE_MMU # fork()
+
+config BR2_PACKAGE_DOTNET_RUNTIME
+	bool "dotnet-runtime"
+	depends on BR2_PACKAGE_DOTNET_RUNTIME_ARCH_SUPPORTS
+	depends on !BR2_TOOLCHAIN_USES_UCLIBC
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on !BR2_STATIC_LIBS
+	help
+	  The .NET runtime, needed to execute .NET applications.
+
+	  Applications that use globalization features need ICU, and
+	  applications that use cryptography need OpenSSL. Both are
+	  loaded at runtime only when needed, so enable them
+	  separately. Without ICU, applications must run with
+	  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1.
+
+	  https://docs.microsoft.com/dotnet/core/
+
+if BR2_PACKAGE_DOTNET_RUNTIME
+
+choice
+	prompt "dotnet-runtime variant"
+	help
+	  Select the .NET runtime provider.
+
+config BR2_PACKAGE_DOTNET_RUNTIME_BIN
+	bool "pre-built"
+	select BR2_PACKAGE_HAS_DOTNET_RUNTIME
+	help
+	  Install the pre-built .NET runtime provided by Microsoft.
+
+endchoice
+
+choice
+	prompt "dotnet-runtime version"
+	default BR2_PACKAGE_DOTNET_RUNTIME_10_0
+	help
+	  Select the .NET runtime major version. The latest release of
+	  the selected major version is installed.
+
+config BR2_PACKAGE_DOTNET_RUNTIME_10_0
+	bool "10.0.x (LTS)"
+
+config BR2_PACKAGE_DOTNET_RUNTIME_8_0
+	bool "8.0.x (LTS)"
+	# The runtime is linked against the system libz.so.1
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_ZLIB_FORCE_LIBZLIB
+
+config BR2_PACKAGE_DOTNET_RUNTIME_6_0
+	bool "6.0.x (LTS)"
+	# The runtime is linked against the system libz.so.1
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_ZLIB_FORCE_LIBZLIB
+
+endchoice
+
+config BR2_PACKAGE_HAS_DOTNET_RUNTIME
+	bool
+
+config BR2_PACKAGE_PROVIDES_DOTNET_RUNTIME
+	string
+	default "dotnet-runtime-bin" if BR2_PACKAGE_DOTNET_RUNTIME_BIN
+
+endif
+
+comment "dotnet-runtime needs a glibc or musl toolchain w/ C++, dynamic library"
+	depends on BR2_PACKAGE_DOTNET_RUNTIME_ARCH_SUPPORTS
+	depends on BR2_TOOLCHAIN_USES_UCLIBC || !BR2_INSTALL_LIBSTDCPP || \
+		BR2_STATIC_LIBS

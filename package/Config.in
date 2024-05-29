@@ -667,6 +667,7 @@ endmenu
 menu "Interpreter languages and scripting"
 	source "package/4th/Config.in"
 	source "package/chicken/Config.in"
+	source "package/dotnet-runtime/Config.in"
 	source "package/duktape/Config.in"
 	source "package/enscript/Config.in"
 	source "package/erlang/Config.in"
