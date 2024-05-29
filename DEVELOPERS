@@ -1331,6 +1331,8 @@ F:	package/bind/
 F:	package/binutils/
 F:	package/cryptsetup/
 F:	package/dash/
+F:	package/dotnet-runtime-bin/
+F:	package/dotnet-runtime/
 F:	package/erlang-jiffy/
 F:	package/esp-hosted/
 F:	package/gcc/
