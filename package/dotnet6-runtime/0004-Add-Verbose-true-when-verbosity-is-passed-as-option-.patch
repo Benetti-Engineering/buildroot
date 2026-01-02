@@ -1,0 +1,45 @@
+From 0b999da7b88000e628bb4423af4c01ad2c93c257 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Date: Wed, 7 Jun 2023 18:50:08 +0200
+Subject: [PATCH] Add Verbose=true when --verbosity is passed as option to
+ build.sh
+
+Upstream: https://github.com/dotnet/runtime/pull/90554
+
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ eng/build.sh             | 5 +++++
+ src/coreclr/runtime.proj | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/eng/build.sh b/eng/build.sh
+index 6c21f316832..76e604446fb 100755
+--- a/eng/build.sh
++++ b/eng/build.sh
+@@ -465,6 +465,11 @@ while [[ $# > 0 ]]; do
+       shift 1
+       ;;
+ 
++      -verbosity)
++      arguments="$arguments /p:Verbose=true"
++      shift 2
++      ;;
++
+       *)
+       extraargs="$extraargs $1"
+       shift 1
+diff --git a/src/coreclr/runtime.proj b/src/coreclr/runtime.proj
+index 42ab2e70d65..9acf6436ff3 100644
+--- a/src/coreclr/runtime.proj
++++ b/src/coreclr/runtime.proj
+@@ -14,6 +14,7 @@
+       <_CoreClrBuildArg Condition="'$(KeepNativeSymbols)' != 'false'" Include="-keepnativesymbols" />
+       <_CoreClrBuildArg Condition="!$([MSBuild]::IsOsPlatform(Windows))" Include="-os $(TargetOS)" />
+       <_CoreClrBuildArg Condition="'$(SkipCrossArchNative)' == 'true'" Include="-skipcrossarchnative" />
++      <_CoreClrBuildArg Condition="'$(Verbose)' == 'true'" Include="-verbose" />
+ 
+       <_CoreClrBuildArg Condition="$([MSBuild]::IsOsPlatform(Windows)) and
+                                    ('$(TargetArchitecture)' == 'x86' or '$(TargetArchitecture)' == 'x64') and
+-- 
+2.34.1
+
