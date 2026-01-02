@@ -1,0 +1,36 @@
+From b2d03d48e2a24b68835a1863956d70af96180ea2 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Date: Wed, 16 Aug 2023 00:09:59 +0200
+Subject: [PATCH] src/coreclr/vm/arm/asmhelpers.S: fix building with GNU AS
+
+GNU AS doesn't support label subtraction when assigning to a register so
+let's load absolute function address to R2 when building with GNU AS.
+
+Upstream: https://github.com/dotnet/runtime/pull/86692
+
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ src/coreclr/vm/arm/asmhelpers.S | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/coreclr/vm/arm/asmhelpers.S b/src/coreclr/vm/arm/asmhelpers.S
+index 2780f95912f..d5e2f1ba2de 100644
+--- a/src/coreclr/vm/arm/asmhelpers.S
++++ b/src/coreclr/vm/arm/asmhelpers.S
+@@ -984,9 +984,13 @@ g_rgWriteBarrierDescriptors:
+     LEAF_ENTRY JIT_WriteBarrier_Callable
+ 
+     // Branch to the write barrier
++#if defined(__clang__)
+     ldr     r2, =JIT_WriteBarrier_Loc-(1f+4) // or R3? See targetarm.h
+ 1:
+     add     r2, pc
++#else
++    ldr     r2, =JIT_WriteBarrier_Loc
++#endif
+     ldr     pc, [r2]
+ 
+     LEAF_END JIT_WriteBarrier_Callable
+-- 
+2.34.1
+
