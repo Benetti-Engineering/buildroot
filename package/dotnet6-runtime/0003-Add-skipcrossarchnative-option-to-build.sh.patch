@@ -1,0 +1,44 @@
+From 62f78aa8133fa4e926279a00584f31f512f276df Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Date: Wed, 7 Jun 2023 16:58:34 +0200
+Subject: [PATCH] Add -skipcrossarchnative option to build.sh
+
+Upstream: https://github.com/dotnet/runtime/pull/90554
+
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ eng/build.sh             | 5 +++++
+ src/coreclr/runtime.proj | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/eng/build.sh b/eng/build.sh
+index ea6be90af61..6c21f316832 100755
+--- a/eng/build.sh
++++ b/eng/build.sh
+@@ -460,6 +460,11 @@ while [[ $# > 0 ]]; do
+       shift 1
+       ;;
+ 
++      -skipcrossarchnative)
++      arguments="$arguments /p:SkipCrossArchNative=true"
++      shift 1
++      ;;
++
+       *)
+       extraargs="$extraargs $1"
+       shift 1
+diff --git a/src/coreclr/runtime.proj b/src/coreclr/runtime.proj
+index 3d4705a92f6..42ab2e70d65 100644
+--- a/src/coreclr/runtime.proj
++++ b/src/coreclr/runtime.proj
+@@ -13,6 +13,7 @@
+       <_CoreClrBuildArg Condition="'$(PortableBuild)' != 'true'" Include="-portablebuild=false" />
+       <_CoreClrBuildArg Condition="'$(KeepNativeSymbols)' != 'false'" Include="-keepnativesymbols" />
+       <_CoreClrBuildArg Condition="!$([MSBuild]::IsOsPlatform(Windows))" Include="-os $(TargetOS)" />
++      <_CoreClrBuildArg Condition="'$(SkipCrossArchNative)' == 'true'" Include="-skipcrossarchnative" />
+ 
+       <_CoreClrBuildArg Condition="$([MSBuild]::IsOsPlatform(Windows)) and
+                                    ('$(TargetArchitecture)' == 'x86' or '$(TargetArchitecture)' == 'x64') and
+-- 
+2.34.1
+
