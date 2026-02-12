@@ -1,0 +1,33 @@
+From 08dd621491963afd226ff32112c5d117b89512c1 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Date: Thu, 12 Feb 2026 17:41:27 +0100
+Subject: [PATCH] Fix building for Xtensa with Linux < 6.1.0 and gcc 13
+
+Only with commit:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8939c58d68f97ce530f02d46c9f2b56c3ec88399
+__umulsidi3 ha been defined, that is required by gcc 13. So let's
+workaround with a local defined __umulsidi3() if Linux version < 6.1.0
+
+Upstream: https://github.com/jwrdegoede/rtl8189ES_linux/pull/133
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+ os_dep/osdep_service.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/os_dep/osdep_service.c b/os_dep/osdep_service.c
+index d6d326a..7666bbb 100644
+--- a/os_dep/osdep_service.c
++++ b/os_dep/osdep_service.c
+@@ -3218,3 +3218,9 @@ int hexstr2bin(const char *hex, u8 *buf, size_t len)
+ 	return 0;
+ }
+ 
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 1, 0))
++unsigned long long __umulsidi3(unsigned int a, unsigned int b) {
++	return (unsigned long long)a * b;
++}
++EXPORT_SYMBOL(__umulsidi3);
++#endif
+-- 
+2.47.3
+
