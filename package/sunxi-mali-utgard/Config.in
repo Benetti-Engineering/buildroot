@@ -56,7 +56,12 @@ config BR2_PACKAGE_SUNXI_MALI_UTGARD_WAYLAND
 	select BR2_PACKAGE_HAS_LIBGBM
 	select BR2_PACKAGE_WAYLAND
 
-comment "wayland support requires version r6p2"
+config BR2_PACKAGE_SUNXI_MALI_UTGARD_X11_DMA_BUF
+	bool "x11_dma_buf"
+	depends on BR2_PACKAGE_SUNXI_MALI_UTGARD_R6P2
+	select BR2_PACKAGE_XORG7
+
+comment "wayland and x11_dmabuf supports require version r6p2"
 	depends on !BR2_PACKAGE_SUNXI_MALI_UTGARD_R6P2
 
 endchoice
@@ -65,6 +70,7 @@ config BR2_PACKAGE_SUNXI_MALI_UTGARD_PLATFORM
 	string
 	default "fbdev" if BR2_PACKAGE_SUNXI_MALI_UTGARD_FBDEV
 	default "wayland" if BR2_PACKAGE_SUNXI_MALI_UTGARD_WAYLAND
+	default "x11_dma_buf" if BR2_PACKAGE_SUNXI_MALI_UTGARD_X11_DMA_BUF
 
 endif
 

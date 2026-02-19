@@ -22,13 +22,18 @@ else ifeq ($(BR2_aarch64),y)
 SUNXI_MALI_UTGARD_ARCH=arm64
 endif
 
+ifeq ($(BR2_PACKAGE_SUNXI_MALI_UTGARD_X11_DMA_BUF),y)
+SUNXI_MALI_INCLUDE_PREFIX = $(@D)/include/x11
+else
+SUNXI_MALI_INCLUDE_PREFIX = $(@D)/include/$(SUNXI_MALI_UTGARD_PLATFORM)
+endif
+
 define SUNXI_MALI_UTGARD_INSTALL_STAGING_CMDS
 	mkdir -p $(STAGING_DIR)/usr/lib $(STAGING_DIR)/usr/include
 
 	cp -rf $(@D)/$(SUNXI_MALI_UTGARD_REV)/$(SUNXI_MALI_UTGARD_ARCH)/$(SUNXI_MALI_UTGARD_PLATFORM)/*.so* \
 		$(STAGING_DIR)/usr/lib/
-	cp -rf $(@D)/include/$(SUNXI_MALI_UTGARD_PLATFORM)/* $(STAGING_DIR)/usr/include/
-
+	cp -rf $(SUNXI_MALI_INCLUDE_PREFIX)/* $(STAGING_DIR)/usr/include/
 	$(INSTALL) -D -m 0644 package/sunxi-mali-utgard/egl.pc \
 		$(STAGING_DIR)/usr/lib/pkgconfig/egl.pc
 	$(INSTALL) -D -m 0644 package/sunxi-mali-utgard/glesv2.pc \
