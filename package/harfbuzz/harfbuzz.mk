@@ -94,5 +94,8 @@ ifeq ($(BR2_TOOLCHAIN_HAS_THREADS),)
 HARFBUZZ_CXXFLAGS += $(TARGET_CXXFLAGS) -DHB_NO_MT
 endif
 
+# Harfbuzz uses C linker by default, force C++ linker
+HARFBUZZ_CONF_OPTS += -Dwith_libstdcxx=true
+
 $(eval $(meson-package))
 $(eval $(host-meson-package))
