@@ -1,0 +1,41 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Thu, 21 Mar 2024 12:42:59 +0000
+Subject: selectively disable the libpulsedsp DSO and padsp wrapper
+
+The libpulsedsp DSO is not compatible with 64-bit time_t, and is a wrapper
+for compatibility with an API that's basically obsolete for 15 years.
+And nowadays pulseaudio itself is largely superseded by pipewire.
+
+padsp is mainly useful for legacy i386 binaries and maybe
+a few very early legacy amd64 binaries (late 90s/early 00s era games,
+especially ported by Loki Games) which might assume OSS audio, and not
+support ALSA or PulseAudio directly. Since we're breaking the platform ABI
+on armel/armhf/etc. *anyway*, we can't rely on the ability to run legacy
+binaries even if they exist, so it's probably no longer interesting to
+provide padsp on those architectures.
+
+However, Debian's i386 is sticking with the old 32-bit time_t.
+
+Forwarded: not-needed
+
+Upstream: N/A it's been picked from Debian that tags it as "Forwarded: not-needed"
+Signed-off: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+ meson.build | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index d4cdbd6..7137e21 100644
+--- a/meson.build
++++ b/meson.build
+@@ -618,7 +618,9 @@ if cc.has_header('sys/soundcard.h', required: get_option('oss-output'))
+   # OSS output via daemon module-detect
+   cdata.set('HAVE_OSS_OUTPUT', 1)
+   # OSS wrapper
+-  cdata.set('HAVE_OSS_WRAPPER', 1)
++  if cc.sizeof('void *') >= 8 or host_machine.cpu_family() == 'x86'
++    cdata.set('HAVE_OSS_WRAPPER', 1)
++  endif
+   cdata.set('PULSEDSP_LOCATION', pulsedsp_location)
+ endif
+ 
