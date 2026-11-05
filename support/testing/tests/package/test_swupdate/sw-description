@@ -1,0 +1,19 @@
+software = {
+	version = "0.1";
+	description = "Firmware update for product";
+
+	product = {
+		rootfs = {
+			rootfs-1: {
+				images: (
+				{
+					filename = "rootfs.cpio";
+					device = "/dev/mmcblk1p3";
+					filesystem = "ext4";
+					encrypted = true;
+					installed-directly = true;
+				});
+			}
+		}
+	}
+}

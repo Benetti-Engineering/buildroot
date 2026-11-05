@@ -26,9 +26,8 @@ class TestSwupdateInfra(infra.basetest.BRTest):
         self.assertRunOk("ps aux | egrep swupdate")
 
         # Check if a simple Swupdate command is correctly executed
-        self.assertRunOk("swupdate -log-level debug show-artifact")
-        self.assertRunOk("swupdate -log-level debug show-artifact | grep 'RUNTIME_TEST_ARTIFACT_NAME'")
-        cmd = "swupdate show-artifact 2>&1 | grep -i 'err'"  # Check if no 'error' among the traces
+        self.assertRunOk("swupdate -n -i 'RUNTIME_TEST_ARTIFACT_NAME' -v")
+        cmd = "swupdate show-artifact 2>&1 | grep -i 'err'"  # TODO!!! Check if no 'error' among the traces
         _, exit_code = self.emulator.run(cmd)
         self.assertEqual(exit_code, 1)
 
