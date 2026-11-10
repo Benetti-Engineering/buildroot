@@ -17,7 +17,8 @@ PULSEAUDIO_CONF_OPTS = \
 	-Dlegacy-database-entry-format=false \
 	-Dman=false \
 	-Drunning-from-build-tree=false \
-	-Dtests=false
+	-Dtests=false \
+	-Doss-output=disabled
 
 PULSEAUDIO_DEPENDENCIES = \
 	host-pkgconf libtool libsndfile libglib2 \
