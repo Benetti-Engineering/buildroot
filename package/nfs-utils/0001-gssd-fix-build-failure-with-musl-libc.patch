@@ -1,0 +1,226 @@
+From bd17dbf6c32d04622e6ef5fbec3dfa023422d49b Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Date: Thu, 12 Nov 2026 17:27:45 +0100
+Subject: [PATCH] gssd: fix build failure with musl libc
+
+gssd prints thread IDs with the '%lx' format specifier, which assumes
+pthread_t is an unsigned long. This holds on glibc, but on musl
+pthread_t is an opaque pointer type ('struct __pthread *'), so building
+with -Werror=format fails:
+
+gssd.c:546:78: error: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'pthread_t' {aka 'struct __pthread *'} [-Werror=format=]
+
+Fix this by explicitly casting pthread_t to unsigned long wherever it
+is printed with '%lx' in gssd.c, gssd_proc.c and krb5_util.c. The cast
+is safe since the value is only used for logging and unsigned long is
+pointer-sized on all Linux ABIs. The output is unchanged on glibc.
+
+Upstream: https://lore.kernel.org/linux-nfs/20261112172732.397411-1-giulio.benetti@benettiengineering.com/T/#u
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+ utils/gssd/gssd.c      | 14 +++++++-------
+ utils/gssd/gssd_proc.c | 18 +++++++++---------
+ utils/gssd/krb5_util.c | 10 +++++-----
+ 3 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/utils/gssd/gssd.c b/utils/gssd/gssd.c
+index 022f0a89..5203d0a7 100644
+--- a/utils/gssd/gssd.c
++++ b/utils/gssd/gssd.c
+@@ -544,7 +544,7 @@ cleanup_active_thread_list(void)
+ 		default:
+ 			/* EDEADLK, EINVAL, and ESRCH... none of which should happen! */
+ 			printerr(0, "watchdog: attempt to join thread id 0x%lx returned %d (%s)!\n",
+-					info->tid, err, strerror(err));
++					(unsigned long)info->tid, err, strerror(err));
+ 			break;
+ 		}
+ 	}
+@@ -554,12 +554,12 @@ cleanup_active_thread_list(void)
+ 			switch (err) {
+ 			case EBUSY:
+ 				printerr(0, "watchdog: thread id 0x%lx still busy on shutdown\n",
+-					 info->tid);
++					 (unsigned long)info->tid);
+ 				/* fall through */
+ 			default:
+ 				/* EDEADLK, EINVAL, and ESRCH... none of which should happen! */
+ 				printerr(0, "watchdog: attempt to join thread id 0x%lx returned %d (%s)!\n",
+-						info->tid, err, strerror(err));
++						(unsigned long)info->tid, err, strerror(err));
+ 				/* fall through */
+ 			case 0:
+ 				saveprev = info->list.tqe_prev;
+@@ -611,7 +611,7 @@ scan_active_thread_list(void)
+ 			 */
+ 			if (tret == PTHREAD_CANCELED)
+ 				printerr(2, "watchdog: thread id 0x%lx cancelled successfully\n",
+-						info->tid);
++						(unsigned long)info->tid);
+ 			saveprev = info->list.tqe_prev;
+ 			TAILQ_REMOVE(&active_thread_list, info, list);
+ 			free(info);
+@@ -628,14 +628,14 @@ scan_active_thread_list(void)
+ 			if (now.tv_sec >= info->timeout.tv_sec) {
+ 				if (cancel_timed_out_upcalls && !(info->flags & UPCALL_THREAD_CANCELED)) {
+ 					printerr(0, "watchdog: thread id 0x%lx timed out\n",
+-							info->tid);
++							(unsigned long)info->tid);
+ 					pthread_cancel(info->tid);
+ 					info->flags |= (UPCALL_THREAD_CANCELED|UPCALL_THREAD_WARNED);
+ 					do_error_downcall(info->fd, info->uid, -ETIMEDOUT);
+ 				} else {
+ 					if (!(info->flags & UPCALL_THREAD_WARNED)) {
+ 						printerr(0, "watchdog: thread id 0x%lx running for %lld seconds\n",
+-								info->tid,
++								(unsigned long)info->tid,
+ 								(long long int)(now.tv_sec - info->timeout.tv_sec + upcall_timeout));
+ 						info->flags |= UPCALL_THREAD_WARNED;
+ 					}
+@@ -656,7 +656,7 @@ scan_active_thread_list(void)
+ 		default:
+ 			/* EDEADLK, EINVAL, and ESRCH... none of which should happen! */
+ 			printerr(0, "watchdog: attempt to join thread id 0x%lx returned %d (%s)!\n",
+-					info->tid, err, strerror(err));
++					(unsigned long)info->tid, err, strerror(err));
+ 			break;
+ 		}
+ 	}
+diff --git a/utils/gssd/gssd_proc.c b/utils/gssd/gssd_proc.c
+index d59c8a19..6bf5f2b5 100644
+--- a/utils/gssd/gssd_proc.c
++++ b/utils/gssd/gssd_proc.c
+@@ -186,7 +186,7 @@ do_downcall(int k5_fd, uid_t uid, struct authgss_private_data *pd,
+ 
+ 	if (get_verbosity() > 1)
+ 		printerr(2, "do_downcall(0x%lx): lifetime_rec=%s acceptor=%.*s\n",
+-			tid, sec2time(lifetime_rec), (int)acceptor->length, (char *)acceptor->value);
++			(unsigned long)tid, sec2time(lifetime_rec), (int)acceptor->length, (char *)acceptor->value);
+ 	buf_size = sizeof(uid) + sizeof(timeout) + sizeof(pd->pd_seq_win) +
+ 		sizeof(pd->pd_ctx_hndl.length) + pd->pd_ctx_hndl.length +
+ 		sizeof(context_token->length) + context_token->length +
+@@ -212,7 +212,7 @@ do_downcall(int k5_fd, uid_t uid, struct authgss_private_data *pd,
+ 	return;
+ out_err:
+ 	free(buf);
+-	printerr(1, "do_downcall(0x%lx): Failed to write downcall!\n", tid);
++	printerr(1, "do_downcall(0x%lx): Failed to write downcall!\n", (unsigned long)tid);
+ 	return;
+ }
+ 
+@@ -225,7 +225,7 @@ do_error_downcall(int k5_fd, uid_t uid, int err)
+ 	int	zero = 0;
+ 	pthread_t tid = pthread_self();
+ 
+-	printerr(2, "do_error_downcall(0x%lx): uid %d err %d\n", tid, uid, err);
++	printerr(2, "do_error_downcall(0x%lx): uid %d err %d\n", (unsigned long)tid, uid, err);
+ 
+ 	if (WRITE_BYTES(&p, end, uid)) goto out_err;
+ 	if (WRITE_BYTES(&p, end, timeout)) goto out_err;
+@@ -388,7 +388,7 @@ create_auth_rpc_client(struct clnt_info *clp,
+ 	/* create an rpc connection to the nfs server */
+ 
+ 	printerr(3, "create_auth_rpc_client(0x%lx): creating %s client for server %s\n", 
+-		tid, clp->protocol, clp->servername);
++		(unsigned long)tid, clp->protocol, clp->servername);
+ 
+ 	protocol = IPPROTO_TCP;
+ 	if ((strcmp(clp->protocol, "udp")) == 0)
+@@ -432,7 +432,7 @@ create_auth_rpc_client(struct clnt_info *clp,
+ 		tgtname = clp->servicename;
+ 
+ 	printerr(3, "create_auth_rpc_client(0x%lx): creating context with server %s\n", 
+-		tid, tgtname);
++		(unsigned long)tid, tgtname);
+ #ifdef HAVE_TIRPC_GSS_SECCREATE
+ 	memset(&req, 0, sizeof(req));
+ 	req.my_cred = sec.cred;
+@@ -583,7 +583,7 @@ krb5_not_machine_creds(struct clnt_info *clp, uid_t uid, char *tgtname,
+ 	pthread_t tid = pthread_self();
+ 
+ 	printerr(2, "krb5_not_machine_creds(0x%lx): uid %d tgtname %s\n", 
+-		tid, uid, tgtname);
++		(unsigned long)tid, uid, tgtname);
+ 
+ 	*chg_err = change_identity(uid);
+ 	if (*chg_err) {
+@@ -632,7 +632,7 @@ krb5_use_machine_creds(struct clnt_info *clp, uid_t uid,
+ 	pthread_t tid = pthread_self();
+ 
+ 	printerr(2, "krb5_use_machine_creds(0x%lx): uid %d tgtname %s\n", 
+-		tid, uid, tgtname);
++		(unsigned long)tid, uid, tgtname);
+ 
+ 	do {
+ 		gssd_refresh_krb5_machine_credential(clp->servername,
+@@ -976,7 +976,7 @@ start_upcall_thread(void (*func)(struct clnt_upcall_info *), struct clnt_upcall_
+ 		return ret;
+ 	}
+ 	printerr(2, "start_upcall_thread(0x%lx): created thread id 0x%lx\n", 
+-		tid, th);
++		(unsigned long)tid, (unsigned long)th);
+ 
+ 	tinfo->tid = th;
+ 	pthread_mutex_lock(&active_thread_list_lock);
+@@ -1041,7 +1041,7 @@ handle_gssd_upcall(struct clnt_info *clp)
+ 	}
+ 	lbuf[lbuflen-1] = 0;
+ 
+-	printerr(2, "\n%s(0x%lx): '%s' (%s)\n", __func__, tid,
++	printerr(2, "\n%s(0x%lx): '%s' (%s)\n", __func__, (unsigned long)tid,
+ 		 lbuf, clp->relpath);
+ 
+ 	for (p = strtok(lbuf, " "); p; p = strtok(NULL, " ")) {
+diff --git a/utils/gssd/krb5_util.c b/utils/gssd/krb5_util.c
+index 7ad67131..0e8f889b 100644
+--- a/utils/gssd/krb5_util.c
++++ b/utils/gssd/krb5_util.c
+@@ -435,7 +435,7 @@ gssd_get_single_krb5_cred(krb5_context context,
+ 	pthread_mutex_lock(&ple_lock);
+ 	if (ple->ccname && ple->endtime > now && !nocache && !force_renew) {
+ 		printerr(3, "%s(0x%lx): Credentials in CC '%s' are good until %s",
+-			 __func__, tid, ple->ccname, ctime((time_t *)&ple->endtime));
++			 __func__, (unsigned long)tid, ple->ccname, ctime((time_t *)&ple->endtime));
+ 		code = 0;
+ 		pthread_mutex_unlock(&ple_lock);
+ 		goto out;
+@@ -495,7 +495,7 @@ gssd_get_single_krb5_cred(krb5_context context,
+ 
+ 	code = 0;
+ 	printerr(2, "%s(0x%lx): principal '%s' ccache:'%s'\n",
+-		__func__, tid, pname, ple->ccname);
++		__func__, (unsigned long)tid, pname, ple->ccname);
+   out:
+ 	if (opts)
+ 		krb5_get_init_creds_opt_free(context, opts);
+@@ -631,7 +631,7 @@ get_full_hostname(const char *inhost, char *outhost, int outhostlen)
+ 	retval = getaddrinfo(inhost, NULL, &hints, &addrs);
+ 	if (retval) {
+ 		printerr(1, "%s(0x%lx): getaddrinfo(%s) failed: %s\n",
+-			 __func__, tid, inhost, gai_strerror(retval));
++			 __func__, (unsigned long)tid, inhost, gai_strerror(retval));
+ 		goto out;
+ 	}
+ 	strncpy(outhost, addrs->ai_canonname, outhostlen);
+@@ -642,7 +642,7 @@ get_full_hostname(const char *inhost, char *outhost, int outhostlen)
+ 
+ 	if (get_verbosity() && strcmp(inhost, outhost))
+ 		printerr(1, "%s(0x%0lx): inhost '%s' different than outhost '%s'\n", 
+-			 __func__, tid, inhost, outhost);
++			 __func__, (unsigned long)tid, inhost, outhost);
+ 
+ 	retval = 0;
+ out:
+@@ -990,7 +990,7 @@ find_keytab_entry(krb5_context context, krb5_keytab kt,
+ 					tried_upper = 1;
+ 				}
+ 			} else {
+-				printerr(2, "find_keytab_entry(0x%lx): Success getting keytab entry for '%s'\n",tid, spn);
++				printerr(2, "find_keytab_entry(0x%lx): Success getting keytab entry for '%s'\n", (unsigned long)tid, spn);
+ 				retval = 0;
+ 				goto out;
+ 			}
+-- 
+2.47.3
+
