@@ -146,6 +146,15 @@ endif
 
 comment "Legacy options removed in 2026.11"
 
+config BR2_PACKAGE_RTL8812AU_AIRCRACK_NG
+	bool "rtl8812au-aircrack-ng has been renamed to rtl8812au"
+	select BR2_LEGACY
+	select BR2_PACKAGE_RTL8812AU if BR2_LINUX_KERNEL && !BR2_s390x
+	help
+	  The rtl8812au-aircrack-ng package has been renamed to
+	  rtl8812au and now uses the 8812au-20210820 driver from
+	  https://github.com/cybersnow02/8812au-20210820.
+
 config BR2_PACKAGE_PRBOOM
 	bool "prboom has been removed"
 	select BR2_LEGACY
