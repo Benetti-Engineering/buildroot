@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_ZLIB_NG_PATH/package/zlib-ng-test/Config.in"

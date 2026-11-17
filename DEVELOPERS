@@ -1377,6 +1377,7 @@ F:	package/vim/
 F:	package/wilc-driver/
 F:	package/wireshark/
 F:	package/zlib-ng/
+F:	support/testing/tests/package/br2-external/zlib-ng/
 F:	support/testing/tests/package/sample_python_libconf.py
 F:	support/testing/tests/package/test_at.py
 F:	support/testing/tests/package/test_bind/
@@ -1397,6 +1398,7 @@ F:	toolchain/
 F:	support/testing/tests/package/test_util_linux.py
 F:	support/testing/tests/package/test_vim.py
 F:	support/testing/tests/package/test_wireshark.py
+F:	support/testing/tests/package/test_zlib_ng.py
 
 N:	Graeme Smecher <gsmecher@threespeedlogic.com>
 F:	package/python-orjson/

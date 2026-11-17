@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ZLIB_NG_TEST
+	bool "zlib-ng-test"
+	depends on BR2_PACKAGE_ZLIB_NG
+	help
+	  Test program for the zlib-ng library.
