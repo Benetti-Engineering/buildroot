@@ -1,0 +1,13 @@
+# Simple minicom runscript, using stdin/stdout as the modem.
+verbose off
+send "AT"
+expect {
+	"OK"
+	timeout 10 goto failed
+}
+print "Got OK from modem"
+exit 0
+
+failed:
+print "Timeout waiting for OK"
+exit 1
