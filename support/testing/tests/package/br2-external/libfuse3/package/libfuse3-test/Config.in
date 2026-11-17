@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBFUSE3_TEST
+	bool "libfuse3-test"
+	depends on BR2_PACKAGE_LIBFUSE3
+	help
+	  Test program for the libfuse3 library.
