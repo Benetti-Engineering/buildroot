@@ -1,0 +1,5 @@
+config BR2_PACKAGE_MONGOOSE_TEST
+	bool "mongoose-test"
+	depends on BR2_PACKAGE_MONGOOSE
+	help
+	  Test program for the mongoose library.
