@@ -1376,6 +1376,7 @@ F:	package/vim/
 F:	package/wilc-driver/
 F:	package/wireshark/
 F:	package/zlib-ng/
+F:	support/testing/tests/package/br2-external/mongoose/
 F:	support/testing/tests/package/br2-external/zlib-ng/
 F:	support/testing/tests/package/sample_python_libconf.py
 F:	support/testing/tests/package/test_at.py
@@ -1387,6 +1388,8 @@ F:	support/testing/tests/package/test_erlang_jiffy.py
 F:	support/testing/tests/package/test_liblo.py
 F:	support/testing/tests/package/test_minicom/
 F:	support/testing/tests/package/test_minicom.py
+F:	support/testing/tests/package/test_mongoose/
+F:	support/testing/tests/package/test_mongoose.py
 F:	support/testing/tests/package/test_putty.py
 F:	support/testing/tests/package/test_python_libconf.py
 F:	support/testing/tests/package/test_rpcbind.py

@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_MONGOOSE_PATH/package/mongoose-test/Config.in"
