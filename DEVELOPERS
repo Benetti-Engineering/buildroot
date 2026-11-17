@@ -1384,6 +1384,7 @@ F:	support/testing/tests/package/test_swugenerator.py
 F:	support/testing/tests/package/test_swupdate.py
 F:	support/testing/tests/package/test_swupdate/
 F:	toolchain/
+F:	support/testing/tests/package/test_util_linux.py
 
 N:	Graeme Smecher <gsmecher@threespeedlogic.com>
 F:	package/python-orjson/
