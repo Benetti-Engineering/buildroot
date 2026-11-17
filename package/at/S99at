@@ -14,6 +14,9 @@ start() {
 		touch /var/spool/cron/atjobs/.SEQ
 		printf "atd: created missing .SEQ file (atjobs will be lost on reboot)\n"
 	fi
+	# atd needs the spool directory to store the output of the
+	# jobs, otherwise they are never executed.
+	mkdir -p /var/spool/cron/atspool/
 
 	printf "Starting atd: "
 	start-stop-daemon --start --quiet --make-pidfile --pidfile /var/run/atd.pid --background --exec /usr/sbin/atd -- -f
