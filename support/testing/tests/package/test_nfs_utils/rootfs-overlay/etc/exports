@@ -1,0 +1,3 @@
+# NFS exports for Buildroot runtime test. The fsid option is needed
+# as the exported directory is a tmpfs mount.
+/srv/nfs 127.0.0.1(rw,sync,no_root_squash,no_subtree_check,insecure,fsid=1)

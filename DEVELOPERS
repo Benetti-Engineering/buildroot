@@ -1396,6 +1396,8 @@ F:	support/testing/tests/package/test_minicom.py
 F:	support/testing/tests/package/test_mmc_utils.py
 F:	support/testing/tests/package/test_mongoose/
 F:	support/testing/tests/package/test_mongoose.py
+F:	support/testing/tests/package/test_nfs_utils/
+F:	support/testing/tests/package/test_nfs_utils.py
 F:	support/testing/tests/package/test_putty.py
 F:	support/testing/tests/package/test_python_libconf.py
 F:	support/testing/tests/package/test_rpcbind.py
