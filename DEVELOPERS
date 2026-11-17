@@ -1379,6 +1379,8 @@ F:	package/wireshark/
 F:	package/zlib-ng/
 F:	support/testing/tests/package/sample_python_libconf.py
 F:	support/testing/tests/package/test_at.py
+F:	support/testing/tests/package/test_bind/
+F:	support/testing/tests/package/test_bind.py
 F:	support/testing/tests/package/test_dash.py
 F:	support/testing/tests/package/test_dash/
 F:	support/testing/tests/package/test_erlang_jiffy.py

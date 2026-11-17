@@ -1,0 +1,8 @@
+$TTL 3600
+@		IN	SOA	ns.buildroot.test. admin.buildroot.test. (
+				1 3600 900 604800 3600 )
+		IN	NS	ns.buildroot.test.
+ns		IN	A	127.0.0.1
+somehost	IN	A	10.20.30.40
+sometext	IN	TXT	"Hello Buildroot TXT"
+www		IN	CNAME	somehost
