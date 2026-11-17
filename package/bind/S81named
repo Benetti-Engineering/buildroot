@@ -11,7 +11,7 @@ case "$1" in
 		    printf "Initializing bind control key: "
                     # if rndc.key is a symlink, the target must exist
 		    touch /etc/rndc.key
-		    rndc-confgen -a -r /dev/urandom 2>/dev/null && echo "OK" || echo "FAIL"
+		    rndc-confgen -a 2>/dev/null && echo "OK" || echo "FAIL"
 		fi
 		printf "Starting domain name daemon: "
 		start-stop-daemon -S -x $DAEMON -- -c $CONFIG -u named
