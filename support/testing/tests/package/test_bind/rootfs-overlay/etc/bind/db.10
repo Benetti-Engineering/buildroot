@@ -1,0 +1,5 @@
+$TTL 3600
+@		IN	SOA	ns.buildroot.test. admin.buildroot.test. (
+				1 3600 900 604800 3600 )
+		IN	NS	ns.buildroot.test.
+40.30.20	IN	PTR	somehost.buildroot.test.
