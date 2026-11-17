@@ -1391,6 +1391,7 @@ F:	support/testing/tests/package/test_liblo.py
 F:	support/testing/tests/package/test_libnspr.py
 F:	support/testing/tests/package/test_minicom/
 F:	support/testing/tests/package/test_minicom.py
+F:	support/testing/tests/package/test_mmc_utils.py
 F:	support/testing/tests/package/test_mongoose/
 F:	support/testing/tests/package/test_mongoose.py
 F:	support/testing/tests/package/test_putty.py
