@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBNSPR_TEST
+	bool "libnspr-test"
+	depends on BR2_PACKAGE_LIBNSPR
+	help
+	  Test program for the NSPR library.

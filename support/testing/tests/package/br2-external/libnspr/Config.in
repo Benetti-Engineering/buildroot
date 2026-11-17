@@ -1,0 +1,1 @@
+source "$BR2_EXTERNAL_LIBNSPR_PATH/package/libnspr-test/Config.in"
