@@ -1391,6 +1391,8 @@ F:	support/testing/tests/package/test_erlang_jiffy.py
 F:	support/testing/tests/package/test_libfuse3.py
 F:	support/testing/tests/package/test_liblo.py
 F:	support/testing/tests/package/test_libnspr.py
+F:	support/testing/tests/package/test_libnvme/
+F:	support/testing/tests/package/test_libnvme.py
 F:	support/testing/tests/package/test_minicom/
 F:	support/testing/tests/package/test_minicom.py
 F:	support/testing/tests/package/test_mmc_utils.py
