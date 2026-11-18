@@ -179,3 +179,69 @@ class TestDotnetRuntimeBinX8664Musl(TestDotnetRuntimeX8664):
 
     def test_run(self):
         self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcArmGlibc(TestDotnetRuntimeArm):
+    config = TestDotnetRuntimeArm.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_ARMV7_EABIHF_GLIBC_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcArmMusl(TestDotnetRuntimeArm):
+    config = TestDotnetRuntimeArm.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_ARMV7_EABIHF_MUSL_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcAarch64Glibc(TestDotnetRuntimeAarch64):
+    config = TestDotnetRuntimeAarch64.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_AARCH64_GLIBC_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcAarch64Musl(TestDotnetRuntimeAarch64):
+    config = TestDotnetRuntimeAarch64.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_AARCH64_MUSL_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcX8664Glibc(TestDotnetRuntimeX8664):
+    config = TestDotnetRuntimeX8664.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_X86_64_GLIBC_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
+
+
+class TestDotnetRuntimeSrcX8664Musl(TestDotnetRuntimeX8664):
+    config = TestDotnetRuntimeX8664.config + \
+        """
+        BR2_TOOLCHAIN_EXTERNAL_BOOTLIN_X86_64_MUSL_STABLE=y
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        """
+
+    def test_run(self):
+        self.check_runtime("11.0.0")
