@@ -1,7 +1,8 @@
 config BR2_PACKAGE_DOTNET_RUNTIME_ARCH_SUPPORTS
 	bool
 	default y if BR2_aarch64
-	# The official ARM binaries are built for ARMv7-A with the
+	# The official ARM binaries, whose managed libraries are also
+	# used when building from source, are built for ARMv7-A with the
 	# hard-float ABI. The CoreCLR JIT also needs at least a VFPv3-D16
 	# FPU.
 	default y if BR2_arm && BR2_ARM_EABIHF && \
@@ -35,11 +36,40 @@ config BR2_PACKAGE_DOTNET_RUNTIME
 
 if BR2_PACKAGE_DOTNET_RUNTIME
 
-# The pre-built runtime provided by Microsoft is the only provider
+choice
+	prompt "dotnet-runtime variant"
+	help
+	  Select the .NET runtime provider.
+
 config BR2_PACKAGE_DOTNET_RUNTIME_BIN
-	bool
-	default y
+	bool "pre-built"
 	select BR2_PACKAGE_HAS_DOTNET_RUNTIME
+	help
+	  Install the pre-built .NET runtime provided by Microsoft.
+
+config BR2_PACKAGE_DOTNET_RUNTIME_SRC
+	bool "built from source"
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_8 # aarch64 FPU assembly
+	depends on BR2_HOST_GCC_AT_LEAST_7 # icu
+	select BR2_HOST_CMAKE_AT_LEAST_3_26
+	select BR2_PACKAGE_HAS_DOTNET_RUNTIME
+	select BR2_PACKAGE_DOTNET_RUNTIME_ICU
+	select BR2_PACKAGE_DOTNET_RUNTIME_KRB5
+	select BR2_PACKAGE_DOTNET_RUNTIME_OPENSSL
+	select BR2_PACKAGE_LTTNG_LIBUST
+	help
+	  Build the native parts of the .NET runtime (CoreCLR, the
+	  native libraries and the hosts) from source. The managed
+	  libraries, that need a .NET SDK to be built, are taken from
+	  the official runtime release.
+
+	  ICU, OpenSSL and Kerberos are needed to build the native
+	  libraries, so their support is always enabled.
+
+comment "built from source needs a toolchain w/ gcc >= 8, host gcc >= 7"
+	depends on !BR2_TOOLCHAIN_GCC_AT_LEAST_8 || !BR2_HOST_GCC_AT_LEAST_7
+
+endchoice
 
 config BR2_PACKAGE_DOTNET_RUNTIME_ICU
 	bool "ICU support"
@@ -89,6 +119,7 @@ config BR2_PACKAGE_HAS_DOTNET_RUNTIME
 config BR2_PACKAGE_PROVIDES_DOTNET_RUNTIME
 	string
 	default "dotnet-runtime-bin" if BR2_PACKAGE_DOTNET_RUNTIME_BIN
+	default "dotnet-runtime-src" if BR2_PACKAGE_DOTNET_RUNTIME_SRC
 
 endif
 

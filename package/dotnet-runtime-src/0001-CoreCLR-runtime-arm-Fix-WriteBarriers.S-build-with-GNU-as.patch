@@ -1,0 +1,52 @@
+From 6e8557db27c0d1af8f2547a16f7cda68c75046c7 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Date: Thu, 26 Nov 2026 16:57:47 +0100
+Subject: [PATCH] CoreCLR: runtime: arm: Fix WriteBarriers.S build with GNU
+ as (#138021)
+
+GNU as doesn't concatenate a quoted string with a following macro
+argument, so it sees "RhpAssignRefAvLocation"\EXPORT_REG_NAME as two
+arguments to GLOBAL_LABEL and fails with:
+
+src/coreclr/runtime/arm/WriteBarriers.S:123: Error: too many positional
+arguments
+
+The label names don't need to be quoted, and the LEAF_ENTRY names in the
+same macros are already unquoted: drop the quotes. clang generates the
+same RhpAssignRefAvLocation<reg> and RhpCheckedAssignRefAvLocation<reg>
+symbols with both forms.
+
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Co-authored-by: Claude Opus 5.5 <noreply@anthropic.com>
+(cherry picked from commit f3075b382cd458205fe6066539084c9b1f17f190)
+Upstream: https://github.com/dotnet/runtime/commit/f3075b382cd458205fe6066539084c9b1f17f190
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ src/coreclr/runtime/arm/WriteBarriers.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/coreclr/runtime/arm/WriteBarriers.S b/src/coreclr/runtime/arm/WriteBarriers.S
+index ee906187b99..b202a3296dc 100644
+--- a/src/coreclr/runtime/arm/WriteBarriers.S
++++ b/src/coreclr/runtime/arm/WriteBarriers.S
+@@ -120,7 +120,7 @@ ALTERNATE_ENTRY RhpAssignRef
+ 
+           // Write the reference into the location. Note that we rely on the fact that no GC can occur between here
+           // and the card table update we may perform below.
+-GLOBAL_LABEL "RhpAssignRefAvLocation"\EXPORT_REG_NAME  // WriteBarrierFunctionAvLocation
++GLOBAL_LABEL RhpAssignRefAvLocation\EXPORT_REG_NAME  // WriteBarrierFunctionAvLocation
+ .ifc \REFREG, r1
+ GLOBAL_LABEL RhpAssignRefAVLocation
+ .endif
+@@ -190,7 +190,7 @@ ALTERNATE_ENTRY RhpCheckedAssignRef
+           dmb
+           // Write the reference into the location. Note that we rely on the fact that no GC can occur between here
+           // and the card table update we may perform below.
+-GLOBAL_LABEL "RhpCheckedAssignRefAvLocation"\EXPORT_REG_NAME // WriteBarrierFunctionAvLocation
++GLOBAL_LABEL RhpCheckedAssignRefAvLocation\EXPORT_REG_NAME // WriteBarrierFunctionAvLocation
+ .ifc \REFREG, r1
+ GLOBAL_LABEL RhpCheckedAssignRefAVLocation
+ .endif
+-- 
+2.47.3
+

@@ -1,0 +1,11 @@
+# From https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json
+sha512  4857a8f2c4ec2f21381916923b2c6a0e94d69ad0380abff9a53f7f99a80b52a00b2a2438c86500b27551047233b1d416ada85ead25b9637c80e9b822274008ee  dotnet-runtime-11.0.0-linux-arm.tar.gz
+sha512  b624e647c72e8f62a0d186aa96aad1b113732e8c39f010be6f95ec026feb2633187e33f24c3af5168daaa1d9b4bb0bb9c396f6d172d18660b9673bb507fa9f45  dotnet-runtime-11.0.0-linux-arm64.tar.gz
+sha512  dbca05e02a6c206c93d02fe7acb6ca9f8025aacca3d17b1383f25dc18b7a3c09cc2c2105d0be92b6a11273a5bb370ff6d56caeca5de0805d12a251f4a44895ca  dotnet-runtime-11.0.0-linux-musl-arm.tar.gz
+sha512  7b32d53ee1c98078f71e73b510332aeca7a70b974f38d93201857ba8b8870e0d175f1d206b15cde03fd145e130bcf86e7c5749e67efec20ff62de0132119f7e3  dotnet-runtime-11.0.0-linux-musl-arm64.tar.gz
+sha512  85e1d28610719a44119ff706bb09f17487380a47d6d0400adad72888ba2cef55e80e2566d15b2812af442ecde469d05d272e15ded04d515f628b40a5345c7854  dotnet-runtime-11.0.0-linux-musl-x64.tar.gz
+sha512  d0846e7ad4a6b07fe3fb7c033a381e6938ec16afbe0b7f7454ff2f9b58247cbbc35758cc785af424385c4572c801060cbd656a822ef624f4907d3cc10a16a080  dotnet-runtime-11.0.0-linux-x64.tar.gz
+# Locally calculated
+sha256  71fd13a699c3e440ec99cfeccdc406a4dc44fd3f93c78b46bde4755fd7945f0d  dotnet-runtime-src-11.0.0.tar.gz
+sha256  cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310  LICENSE.TXT
+sha256  4790bb15f0edd1b105aecb05174fc6c589d4d9fad0c50616ef5f7dc365f1c8a6  THIRD-PARTY-NOTICES.TXT

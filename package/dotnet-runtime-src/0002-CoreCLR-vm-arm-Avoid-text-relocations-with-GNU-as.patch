@@ -1,0 +1,70 @@
+From 412cef445ace759b034d44a811a061fce4a8a305 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Date: Thu, 26 Nov 2026 17:01:09 +0100
+Subject: [PATCH] CoreCLR: vm: arm: Avoid text relocations with GNU as
+
+With GNU as, the addresses of g_TrapReturningThreads and g_pPollGC are
+loaded from literal pools, as absolute addresses. In libcoreclr.so,
+these literals in .text need dynamic relocations, so the library gets
+DT_TEXTREL, and fails to link when text relocations are an error, like
+with musl toolchains:
+
+  ld: read-only segment has dynamic relocations
+
+Compute the addresses relative to the PC with movw/movt instead, like
+the clang code path does with its literal pool, so that the linker
+resolves them and no dynamic relocations are needed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+Upstream: https://github.com/dotnet/runtime/pull/138374
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ src/coreclr/vm/arm/asmhelpers.S   | 8 ++++++--
+ src/coreclr/vm/arm/pinvokestubs.S | 4 +++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/src/coreclr/vm/arm/asmhelpers.S b/src/coreclr/vm/arm/asmhelpers.S
+index d09438bf62d..275858a0bff 100644
+--- a/src/coreclr/vm/arm/asmhelpers.S
++++ b/src/coreclr/vm/arm/asmhelpers.S
+@@ -832,7 +832,9 @@ ProbeLoop:
+ 1:
+         add     r2, pc
+ #else
+-        ldr     r2, =g_TrapReturningThreads
++        movw    r2, #:lower16:g_TrapReturningThreads - (. + 12)
++        movt    r2, #:upper16:g_TrapReturningThreads - (. + 8)
++        add     r2, pc
+ #endif
+         ldr     r2, [r2]
+         cbnz    r2, LOCAL_LABEL(JIT_PollGCRarePath)
+@@ -843,7 +845,9 @@ LOCAL_LABEL(JIT_PollGCRarePath):
+ 1:
+         add     r2, pc
+ #else
+-        ldr     r2, =g_pPollGC
++        movw    r2, #:lower16:g_pPollGC - (. + 12)
++        movt    r2, #:upper16:g_pPollGC - (. + 8)
++        add     r2, pc
+ #endif
+         ldr     r2, [r2]
+         EPILOG_BRANCH_REG r2
+diff --git a/src/coreclr/vm/arm/pinvokestubs.S b/src/coreclr/vm/arm/pinvokestubs.S
+index b102ae12d79..c3cafd48c74 100644
+--- a/src/coreclr/vm/arm/pinvokestubs.S
++++ b/src/coreclr/vm/arm/pinvokestubs.S
+@@ -138,7 +138,9 @@
+ 1:
+         add     r2, pc
+ #else
+-        ldr     r2, =g_TrapReturningThreads
++        movw    r2, #:lower16:g_TrapReturningThreads - (. + 12)
++        movt    r2, #:upper16:g_TrapReturningThreads - (. + 8)
++        add     r2, pc
+ #endif
+         ldr     r2, [r2]
+         cbnz    r2, LOCAL_LABEL(RarePath)
+-- 
+2.47.3
+
