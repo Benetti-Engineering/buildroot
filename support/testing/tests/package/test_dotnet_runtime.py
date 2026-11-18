@@ -69,3 +69,35 @@ class TestDotnetRuntimeBin6(TestDotnetRuntimeBase):
     def test_run(self):
         self.check_runtime("6.0.36")
 
+
+class TestDotnetRuntimeSrc10(TestDotnetRuntimeBase):
+    config = TestDotnetRuntimeBase.config + \
+        """
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        BR2_PACKAGE_DOTNET_RUNTIME_10_0=y
+        """
+
+    def test_run(self):
+        self.check_runtime("10.0.15")
+
+
+class TestDotnetRuntimeSrc8(TestDotnetRuntimeBase):
+    config = TestDotnetRuntimeBase.config + \
+        """
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        BR2_PACKAGE_DOTNET_RUNTIME_8_0=y
+        """
+
+    def test_run(self):
+        self.check_runtime("8.0.34")
+
+
+class TestDotnetRuntimeSrc6(TestDotnetRuntimeBase):
+    config = TestDotnetRuntimeBase.config + \
+        """
+        BR2_PACKAGE_DOTNET_RUNTIME_SRC=y
+        BR2_PACKAGE_DOTNET_RUNTIME_6_0=y
+        """
+
+    def test_run(self):
+        self.check_runtime("6.0.36")
