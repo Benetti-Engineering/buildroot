@@ -6,12 +6,12 @@
 start() {
 	printf "Starting rpcbind: "
 	umask 077
-	start-stop-daemon -S -q -p /var/run/rpcbind.pid --exec /usr/sbin/rpcbind
+	start-stop-daemon -S -q --exec /usr/sbin/rpcbind
 	echo "OK"
 }
 stop() {
 	printf "Stopping rpcbind daemon: "
-	start-stop-daemon -K -q -p /var/run/rpcbind.pid
+	start-stop-daemon -K -q --exec /usr/sbin/rpcbind
 	echo "OK"
 }
 restart() {
