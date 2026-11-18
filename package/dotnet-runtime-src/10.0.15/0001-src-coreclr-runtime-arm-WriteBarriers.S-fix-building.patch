@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Date: Thu, 19 Nov 2026 18:45:39 +0100
+Subject: [PATCH] src/coreclr/runtime/arm/WriteBarriers.S: fix building with
+ GNU AS
+
+GNU AS doesn't concatenate a quoted string with a macro argument, and
+sees "RhpAssignRefAvLocation"\EXPORT_REG_NAME as two arguments:
+
+WriteBarriers.S:123: Error: too many positional arguments
+
+The label names don't need to be quoted, so drop the quotes, like it is
+already done for the LEAF_ENTRY names.
+
+Upstream: not submitted yet
+
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ src/coreclr/runtime/arm/WriteBarriers.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/coreclr/runtime/arm/WriteBarriers.S b/src/coreclr/runtime/arm/WriteBarriers.S
+index 30afebc..b65acc3 100644
+--- a/src/coreclr/runtime/arm/WriteBarriers.S
++++ b/src/coreclr/runtime/arm/WriteBarriers.S
+@@ -120,7 +120,7 @@ ALTERNATE_ENTRY RhpAssignRef
+ 
+           // Write the reference into the location. Note that we rely on the fact that no GC can occur between here
+           // and the card table update we may perform below.
+-GLOBAL_LABEL "RhpAssignRefAvLocation"\EXPORT_REG_NAME  // WriteBarrierFunctionAvLocation
++GLOBAL_LABEL RhpAssignRefAvLocation\EXPORT_REG_NAME  // WriteBarrierFunctionAvLocation
+ .ifc \REFREG, r1
+ GLOBAL_LABEL RhpAssignRefAVLocation
+ .endif
+@@ -190,7 +190,7 @@ ALTERNATE_ENTRY RhpCheckedAssignRef
+           dmb
+           // Write the reference into the location. Note that we rely on the fact that no GC can occur between here
+           // and the card table update we may perform below.
+-GLOBAL_LABEL "RhpCheckedAssignRefAvLocation"\EXPORT_REG_NAME // WriteBarrierFunctionAvLocation
++GLOBAL_LABEL RhpCheckedAssignRefAvLocation\EXPORT_REG_NAME // WriteBarrierFunctionAvLocation
+ .ifc \REFREG, r1
+ GLOBAL_LABEL RhpCheckedAssignRefAVLocation
+ .endif
+-- 
+2.47.3
+

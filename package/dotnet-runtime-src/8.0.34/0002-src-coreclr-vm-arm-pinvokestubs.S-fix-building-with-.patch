@@ -1,0 +1,64 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+Date: Wed, 16 Aug 2023 00:10:40 +0200
+Subject: [PATCH] src/coreclr/vm/arm/pinvokestubs.S: fix building with GNU AS
+
+GNU AS doesn't support label subtraction when assigning to a register so
+let's load absolute function address to R1/R2 when building with GNU AS.
+
+Upstream: https://github.com/dotnet/runtime/commit/20e3bbf9ee6a3f6a465f6d0b12ed0d3efd4fef22
+
+Signed-off-by: Giulio Benetti <giulio.benetti+tekvox@benettiengineering.com>
+---
+ src/coreclr/vm/arm/pinvokestubs.S | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/src/coreclr/vm/arm/pinvokestubs.S b/src/coreclr/vm/arm/pinvokestubs.S
+index ffecb70..5875a58 100644
+--- a/src/coreclr/vm/arm/pinvokestubs.S
++++ b/src/coreclr/vm/arm/pinvokestubs.S
+@@ -79,9 +79,13 @@
+ 
+         PROLOG_PUSH  "{r4, lr}"
+ 
++#if defined(__clang__)
+         ldr     r1, =s_gsCookie-(1f+4)
+ 1:
+         add     r1, pc
++#else
++        ldr     r1, =s_gsCookie
++#endif
+         ldr     r1, [r1]
+         str     r1, [r0]
+         add     r4, r0, SIZEOF__GSCookie
+@@ -89,9 +93,13 @@
+         // r4 = pFrame
+ 
+         // set first slot to the value of InlinedCallFrame::`vftable' (checked by runtime code)
++#if defined(__clang__)
+         ldr     r1, =_ZTV16InlinedCallFrame+8-(2f+4)
+ 2:
+         add     r1, pc
++#else
++        ldr     r1, =_ZTV16InlinedCallFrame+8
++#endif
+         str     r1, [r4]
+ 
+         mov     r1, 0
+@@ -141,9 +149,13 @@
+         str     r2, [r1, #Thread_m_fPreemptiveGCDisabled]
+ 
+         // Check return trap
++#if defined(__clang__)
+         ldr     r2, =g_TrapReturningThreads-(1f+4)
+ 1:
+         add     r2, pc
++#else
++        ldr     r2, =g_TrapReturningThreads
++#endif
+         ldr     r2, [r2]
+         cbnz    r2, LOCAL_LABEL(RarePath)
+ 
+-- 
+2.47.3
+

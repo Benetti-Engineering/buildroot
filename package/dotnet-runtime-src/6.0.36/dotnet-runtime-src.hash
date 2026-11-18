@@ -1,0 +1,11 @@
+# From https://builds.dotnet.microsoft.com/dotnet/release-metadata/6.0/releases.json
+sha512  f3f9199a97db81d3e3ed249e0e9b8f17afb785e8b9ebad00016576382d3d0f2029a31eaf760be2509fde796a42efeb727b156488a42f48cc08013f87479cacfd  dotnet-runtime-6.0.36-linux-arm.tar.gz
+sha512  aa9a35f181204199ac6c44863c4773f8967b25adce218e23ce2822b40b26c38edc1e4e2ff323dabb81ae049bc187f14d209ef1365e68970fd6c32af21f0a1d44  dotnet-runtime-6.0.36-linux-arm64.tar.gz
+sha512  3dd539816405ec2d818f611a7cb98fe4069960e8ac4664ccca04ff8b2e0679387b0a3f2cc5045bef95657626ac1045bedc4e502da304ee54678afbbe83dcc3b3  dotnet-runtime-6.0.36-linux-musl-arm.tar.gz
+sha512  0830715511ab602242487c5fae0dc7a5b75e0c9d7705e624181ec13cc4726a06d7935df952aeddda0dc2c46db95ab14af9d8229a2302b1e6d2fd7e892b42267b  dotnet-runtime-6.0.36-linux-musl-arm64.tar.gz
+sha512  56c2161c52901706fd769d2c9168cff5959576bd1a72d89f7c27858f467f59970624ea9a0559368462bc178e7c9ef7d86d0fda08c7dbdb72dd3e9084280823eb  dotnet-runtime-6.0.36-linux-musl-x64.tar.gz
+sha512  afb6018fcabec468ccd7ae2f1131d8c9de7f4de7645b8f0c223efbbdbfdc515fb0642a399ebfe372c02044416c4cae463c9c802cd156b9da4181efff0e33ee94  dotnet-runtime-6.0.36-linux-x64.tar.gz
+# Locally calculated
+sha256  e5495572d8794988fecd1f67ed34d0b319b65e2eca0739020a4dc34433382277  dotnet-runtime-src-6.0.36.tar.gz
+sha256  cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310  LICENSE.TXT
+sha256  6cd1c020de674c8c7fb07783a26ca386e03c33be4960d0ee7d9a9005498a4284  THIRD-PARTY-NOTICES.TXT
