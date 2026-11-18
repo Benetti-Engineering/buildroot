@@ -1378,6 +1378,7 @@ F:	package/vim/
 F:	package/wilc-driver/
 F:	package/wireshark/
 F:	package/zlib-ng/
+F:	support/testing/tests/package/test_dotnet_runtime.py
 F:	support/testing/tests/package/test_swugenerator.py
 F:	support/testing/tests/package/test_swupdate.py
 F:	support/testing/tests/package/test_swupdate/
